@@ -1,0 +1,2 @@
+# CloudBot
+Multifunctional Discord bot
