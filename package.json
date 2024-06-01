@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "discord-timestamp": "^1.0.2",
+    "discord.js": "^13.17.1"
+  }
+}
