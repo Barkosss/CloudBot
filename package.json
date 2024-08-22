@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@discordjs/rest": "^2.3.0",
+    "discord-timestamp": "^1.0.2",
+    "discord.js": "^14.15.3",
+    "moonlifedb": "^1.0.0-alpha.10-PRE3"
+  }
+}

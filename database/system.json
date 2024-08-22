@@ -1,0 +1,72 @@
+{
+	"system": {
+		"createVoices": [],
+		"notifyRole": "1198700385473417358",
+		"serverStatus": {
+			"name": "Russian Role-Play Server | Distant Dokara",
+			"hostAID": "2126",
+			"hostID": "378064852696039435",
+			"password": "Я ебал JSON",
+			"info": ""
+		}
+	},
+	"emoji": {
+		"verify": "<:newUser:1268143636822884363>",
+		"registration": "<:newUser:1268143636822884363>",
+		"status": "<:announcement:1268143251991429134>",
+		"open": "<:greenDot:1268147419959263242>",
+		"timetable": "<:timing:1268147432823328888>",
+		"bell": "<:bell:1268147426074689546>",
+		"access": "<:world:1268148980684951583>",
+		"reminder": "<:bell:1268147426074689546>",
+		"create": "<:greenPlus:1268143630389088391>",
+		"edit": "<:pencil:1269650218173857803>",
+		"close": "<:redCross:1269650205456859138>",
+		"accepted": "<:greenCheck:1269669183478562947>",
+		"reject": "<:cross:1269650205456859138>",
+		"mail": "<:mail:1275031147977642014>"
+	},
+	"color": {
+		"main": "#2b2d31",
+		"green": "cee0dc"
+	},
+	"text": {
+		"serverStatus": {
+			"serverName": "Russian Role-Play Server | Distant Dokara",
+			"errorAccess": "У вас недостаточно прав!",
+			"announceEnable": "Вы успешно **подключили** уведомления!",
+			"announceDisable": "Вы успешно **отключили** уведомления!",
+			"description": "> *Указано Московское время*",
+			"timetable": {
+				"mon": "**`--:--` - `--:--`**",
+				"tue": "**`--:--` - `--:--`**",
+				"wed": "**`--:--` - `--:--`**",
+				"thu": "**`--:--` - `--:--`**",
+				"fri": "**`--:--` - `--:--`**",
+				"sat": "**`--:--` - `--:--`**",
+				"sun": "**`--:--` - `--:--`**"
+			},
+			"error": {
+				"serverIsNotStart": "*Сервер не запущен*",
+				"adminNotFound": "Админ с указанным AID не найден"
+			}
+		},
+		"reminder": {
+			"create": {
+				"button": "Создать напоминание"
+			},
+			"edit": {},
+			"remove": {
+				"description": "Напоминание было удалено"
+			},
+			"list": {},
+			"error": {
+				"notCorrectFormatData": "Указан некорректный формат. `ДД.ММ.ГГГГ ЧЧ:ММ`",
+				"notCorrectFormat": "Вы указали некорректный формат даты или длительности",
+				"notFutureDate": "Дата напоминания должна быть в будущем",
+				"notFound": "Напоминание не найдено",
+				"notEditData": "Не указаны содержимое или дата напоминания"
+			}
+		}
+	}
+}
