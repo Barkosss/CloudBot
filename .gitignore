@@ -5,6 +5,7 @@ build/
 gradlew
 gradlew.bat
 *.jar
+src/main/resources/config.json
 
 ### IntelliJ IDEA ###
 .idea
