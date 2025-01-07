@@ -6,6 +6,7 @@ gradlew
 gradlew.bat
 *.jar
 src/main/resources/config.json
+src/main/resources/logs
 
 ### IntelliJ IDEA ###
 .idea
