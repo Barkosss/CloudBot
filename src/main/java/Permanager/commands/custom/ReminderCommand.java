@@ -3,14 +3,22 @@ package Permanager.commands.custom;
 import Permanager.commands.BaseCommand;
 import Permanager.utils.ValidateService;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ReminderCommand implements BaseCommand {
@@ -51,72 +59,127 @@ public class ReminderCommand implements BaseCommand {
 
     @Override
     public void run(SlashCommandInteractionEvent event) {
-
-        switch (event.getSubcommandName()) {
+        String action = event.getId().split("_")[0];
+        EmbedBuilder embed = new EmbedBuilder();
+        switch (action) {
 
             case "create": {
-                create(event);
+                String content = Objects.requireNonNull(event.getOption("content")).getAsString();
+                String duration = Objects.requireNonNull(event.getOption("duration")).getAsString();
+                embed = create(event.getIdLong(), Objects.requireNonNull(event.getGuild()).getIdLong(), content, duration);
                 break;
             }
 
             case "edit": {
-                edit(event);
+                //edit(event, event);
                 break;
             }
 
             case "remove": {
-                remove(event);
+                //remove(event, event);
                 break;
             }
 
             case "list": {
-                list(event);
+                //list(event, event);
+                break;
+            }
+        }
+
+        event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+    }
+
+    @Override
+    public void messageContext(MessageContextInteractionEvent event) {
+
+        TextInput content = TextInput.create("content", "Reminder's content", TextInputStyle.PARAGRAPH)
+                .setPlaceholder("Enter content")
+                .setMaxLength(300)
+                .setRequired(true)
+                .setValue(event.getTarget().getContentRaw())
+                .build();
+
+        TextInput duration = TextInput.create("duration", "Duration", TextInputStyle.SHORT)
+                .setPlaceholder("Enter duration")
+                .setMaxLength(64)
+                .setRequired(true)
+                .build();
+
+        Modal modal = Modal.create("reminder_create", "Create reminder")
+                .addComponents(ActionRow.of(content), ActionRow.of(duration))
+                .build();
+
+        event.replyModal(modal).queue();
+    }
+
+    @Override
+    public void modal(ModalInteractionEvent event) {
+        String action = event.getId().split("_")[0];
+
+        switch (action) {
+            case "create": {
+                String content = event.getValue("content").getAsString();
+                String duration = event.getValue("duration").getAsString();
+                EmbedBuilder embed = create(event.getIdLong(), event.getGuild().getIdLong(), content, duration);
+
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                break;
+            }
+
+            case "edit": {
+                // ...
+                EmbedBuilder embed = edit(0, 0, "", "");
+
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                break;
+            }
+
+            case "remove": {
+                // ...
+                EmbedBuilder embed = remove(0, 0, 0);
+
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+                break;
+            }
+
+            case "list": {
+                // ...
+                EmbedBuilder embed = list(0, 0);
+
+                event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 break;
             }
         }
     }
 
-    private void create(SlashCommandInteractionEvent event) {
-        String duration = event.getOption("duration").getAsString();
-        String content = event.getOption("content").getAsString();
+    private EmbedBuilder create(long userId, long serverId, String content, String duration) {
         Optional<LocalDate> validDuration = validate.isValidDate(duration);
 
         if (validDuration.isEmpty() || validDuration.get().isBefore(LocalDate.now())) {
-            EmbedBuilder embed = new EmbedBuilder();
-
-            event.replyEmbeds(embed.build()).setEphemeral(true).queue();
-            return;
+            return new EmbedBuilder();
         }
         long index = 1;
 
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("Create reminder");
-        embed.addField("Duration", "", false);
-        embed.addField("Content", String.format("```\n%s\n```", content), false);
-        embed.setColor(Color.decode(""));
-        embed.setFooter(String.format("Create reminder #%s", index));
-
-        event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+        return new EmbedBuilder()
+                .setTitle("Create reminder")
+                .addField("Duration", "", false)
+                .addField("Content", String.format("```\n%s\n```", content), false)
+                .setColor(Color.decode(""))
+                .setFooter(String.format("Create reminder #%s", index));
     }
 
-    private void edit(SlashCommandInteractionEvent event) {
+    private EmbedBuilder edit(long userId, long serverId, String newContent, String newDuration) {
 
-        EmbedBuilder embed = new EmbedBuilder();
-
-        event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+        return new EmbedBuilder();
     }
 
-    private void remove(SlashCommandInteractionEvent event) {
+    private EmbedBuilder remove(long userId, long serverId, long reminderId) {
 
-        EmbedBuilder embed = new EmbedBuilder();
-
-        event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+        return new EmbedBuilder();
     }
 
-    private void list(SlashCommandInteractionEvent event) {
+    private EmbedBuilder list(long userId, long serverId) {
 
-        EmbedBuilder embed = new EmbedBuilder();
-
-        event.replyEmbeds(embed.build()).setEphemeral(true).queue();
+        return new EmbedBuilder();
     }
 }

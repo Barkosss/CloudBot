@@ -4,6 +4,7 @@ import Permanager.commands.BaseCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import java.awt.*;
 
 public class UserInfoCommand implements BaseCommand {
+
     @Override
     public String getCommandName() {
         return "userinfo";
@@ -29,19 +31,21 @@ public class UserInfoCommand implements BaseCommand {
 
     @Override
     public void run(SlashCommandInteractionEvent event) {
-        User targetUser;
-        if (event.getOption("member") != null) {
-            targetUser = event.getOption("member").getAsUser();
-        } else {
-            targetUser = event.getUser();
-        }
+        User targetUser = event.getOption("member") != null ? event.getOption("member").getAsUser() : event.getUser();
+        event.replyEmbeds(sendEmbed(targetUser).build()).queue();
+    }
 
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("User Information: " + targetUser.getName());
-        embed.setThumbnail(targetUser.getEffectiveAvatarUrl());
-        embed.setFooter("User id: " + targetUser.getId());
-        embed.setColor(Color.decode("#5564f2"));
+    @Override
+    public void userContext(UserContextInteractionEvent event) {
+        User targetUser = event.getTarget();
+        event.replyEmbeds(sendEmbed(targetUser).build()).queue();
+    }
 
-        event.replyEmbeds(embed.build()).queue();
+    private EmbedBuilder sendEmbed(User targetUser) {
+        return new EmbedBuilder()
+                .setTitle("User Information: " + targetUser.getName())
+                .setThumbnail(targetUser.getEffectiveAvatarUrl())
+                .setFooter("User id: " + targetUser.getId())
+                .setColor(Color.decode("#5564f2"));
     }
 }

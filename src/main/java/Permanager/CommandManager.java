@@ -6,11 +6,15 @@ import Permanager.utils.LoggerHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
@@ -75,9 +79,27 @@ public class CommandManager extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        String commandName = event.getName();
-        BaseCommand command = commands.get(commandName);
-        command.run(event);
+    public void onGenericInteractionCreate(@NotNull GenericInteractionCreateEvent interaction) {
+        switch (interaction) {
+            case SlashCommandInteractionEvent slashInteractionEvent -> {
+                // Слэш
+                String commandName = slashInteractionEvent.getName();
+                BaseCommand command = commands.get(commandName);
+                command.run(slashInteractionEvent);
+            }
+            case ButtonInteractionEvent buttonInteractionEvent -> {
+                // Кнопка
+                String commandName = buttonInteractionEvent.getComponentId().split("_")[0];
+                BaseCommand command = commands.get(commandName);
+                command.button(buttonInteractionEvent);
+            }
+            case StringSelectInteractionEvent stringSelectEvent -> {
+                // Меню выбора (Строки)
+                String commandName = stringSelectEvent.getComponentId().split("_")[0];
+                BaseCommand command = commands.get(commandName);
+                command.select(stringSelectEvent);
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + interaction);
+        }
     }
 }

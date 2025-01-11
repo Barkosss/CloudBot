@@ -5,11 +5,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.awt.*;
 
 public class PingCommand implements BaseCommand {
-
 
     @Override
     public String getCommandName() {
@@ -37,6 +37,7 @@ public class PingCommand implements BaseCommand {
         embed.addField("Uptime: ", String.format("<t:%s:R>", "00000"), false);
         embed.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
         embed.setColor(Color.decode("#5564f2"));
+
 
         event.replyEmbeds(embed.build()).setEphemeral(true).queue();
     }
