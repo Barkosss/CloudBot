@@ -3,7 +3,6 @@ package Permanager.commands.custom;
 import Permanager.commands.BaseCommand;
 import Permanager.utils.ValidateService;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -122,21 +121,40 @@ public class ReminderCommand implements BaseCommand {
                 String duration = event.getValue("duration").getAsString();
                 EmbedBuilder embed = create(event.getIdLong(), event.getGuild().getIdLong(), content, duration);
 
+                // ...
+                // Добавление напоминания в базу данных
+                // ...
+
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 break;
             }
 
             case "edit": {
+                String newContent = event.getValue("content").getAsString();
+                String newDuration = event.getValue("duration").getAsString();
+                EmbedBuilder embed = edit(event.getIdLong(), event.getGuild().getIdLong(), newContent, newDuration);
+
                 // ...
-                EmbedBuilder embed = edit(0, 0, "", "");
+                // Изменение напоминания в базе данных
+                // ...
 
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 break;
             }
 
             case "remove": {
+                Optional<Long> validReminderId = validate.isValidLong(event.getValue("index").getAsString());
+
+                if (validReminderId.isEmpty()) {
+                    // ERROR
+                    return;
+                }
+
+                EmbedBuilder embed = remove(event.getIdLong(), event.getGuild().getIdLong(), validReminderId.get());
+
                 // ...
-                EmbedBuilder embed = remove(0, 0, 0);
+                // Удаление напоминания из базы данных
+                // ...
 
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 break;
@@ -144,7 +162,11 @@ public class ReminderCommand implements BaseCommand {
 
             case "list": {
                 // ...
-                EmbedBuilder embed = list(0, 0);
+                EmbedBuilder embed = list(event.getIdLong(), event.getGuild().getIdLong());
+
+                // ...
+                // Получение напоминаний из базы данных
+                // ...
 
                 event.replyEmbeds(embed.build()).setEphemeral(true).queue();
                 break;
