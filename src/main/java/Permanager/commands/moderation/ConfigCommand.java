@@ -2,9 +2,12 @@ package Permanager.commands.moderation;
 
 import Permanager.commands.BaseCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+
+import java.util.List;
 
 public class ConfigCommand implements BaseCommand {
     @Override
@@ -18,8 +21,8 @@ public class ConfigCommand implements BaseCommand {
     }
 
     @Override
-    public SlashCommandData registerCommand() {
-        return Commands.slash(getCommandName(), getCommandDescription())
+    public List<CommandData> registerCommand() {
+        return List.of(Commands.slash(getCommandName(), getCommandDescription())
                 .addSubcommands(
                         new SubcommandData("dashboard", "...")
                 )
@@ -31,7 +34,7 @@ public class ConfigCommand implements BaseCommand {
                 )
                 .addSubcommands(
                         new SubcommandData("limit", "...")
-                );
+                ));
     }
 
     @Override

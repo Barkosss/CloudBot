@@ -6,10 +6,12 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.awt.*;
+import java.util.List;
 
 public class UserInfoCommand implements BaseCommand {
 
@@ -24,9 +26,9 @@ public class UserInfoCommand implements BaseCommand {
     }
 
     @Override
-    public SlashCommandData registerCommand() {
-        return Commands.slash(getCommandName(), getCommandDescription())
-                .addOption(OptionType.USER, "member", "Target member");
+    public List<CommandData> registerCommand() {
+        return List.of(Commands.slash(getCommandName(), getCommandDescription())
+                .addOption(OptionType.USER, "member", "Target member"));
     }
 
     @Override

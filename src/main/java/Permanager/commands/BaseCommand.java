@@ -6,7 +6,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+
+import java.util.List;
 
 public interface BaseCommand {
 
@@ -14,7 +16,7 @@ public interface BaseCommand {
 
     String getCommandDescription();
 
-    SlashCommandData registerCommand();
+    List<CommandData> registerCommand();
 
     void run(SlashCommandInteractionEvent event);
 

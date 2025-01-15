@@ -7,17 +7,21 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
+import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,19 +51,24 @@ public class CommandManager extends ListenerAdapter {
                 // Создаём экземпляр класса
                 instanceClass = subclass.getConstructor().newInstance();
 
-                commandName = instanceClass.getCommandName().toLowerCase();
+                commandName = instanceClass.getCommandName();
 
                 // Если название команды пустое, то пропускаем ход
-                if (commandName.isEmpty()) {
+                if (commandName == null) {
                     continue;
                 }
+                commandName = commandName.toLowerCase();
 
                 // Проверка, нет ли команд с таким именем в мапе
                 if (!commands.containsKey(commandName)) {
                     // Добавляем класс в хэшмап, ключ - название команды, значение - экземпляр класса
                     commands.put(commandName, instanceClass);
                     // Добавляем команду в отображение
-                    JDACommands = JDACommands.addCommands(instanceClass.registerCommand());
+                    List<CommandData> commands = instanceClass.registerCommand();
+                    for (CommandData command : commands) {
+                        JDACommands = JDACommands.addCommands(command);
+                    }
+
                 } else {
                     String errMessage = String.format("There was a duplication of the command - %s", commandName);
                     logger.error(errMessage, true);
@@ -98,6 +107,18 @@ public class CommandManager extends ListenerAdapter {
                 String commandName = stringSelectEvent.getComponentId().split("_")[0];
                 BaseCommand command = commands.get(commandName);
                 command.select(stringSelectEvent);
+            }
+            case ModalInteractionEvent modalInteractionEvent -> {
+                // Диалоговое окно (Modal)
+                String commandName = modalInteractionEvent.getModalId().split("_")[0];
+                BaseCommand command = commands.get(commandName);
+                command.modal(modalInteractionEvent);
+            }
+            case MessageContextInteractionEvent messageContextInteractionEvent -> {
+                // Message Context
+                String commandName = messageContextInteractionEvent.getFullCommandName().split(" ")[0].toLowerCase();
+                BaseCommand command = commands.get(commandName);
+                command.messageContext(messageContextInteractionEvent);
             }
             default -> throw new IllegalStateException("Unexpected value: " + interaction);
         }

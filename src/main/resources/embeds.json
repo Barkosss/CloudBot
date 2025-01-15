@@ -1,0 +1,19 @@
+{
+    "brickbank": {
+        "name": "Brick Bank",
+        "title": "Brick Bank",
+        "color": "#00000"
+    },
+    "verify": {
+        "name": "Verification"
+
+    },
+    "registration": {
+        "name": "Registration"
+
+    },
+    "serverstatus": {
+        "name": "Status Server"
+
+    }
+}
