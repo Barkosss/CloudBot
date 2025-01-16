@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 
 import java.util.List;
 
@@ -32,7 +33,18 @@ public class BrickBankCommand implements BaseCommand {
     @Override
     public List<CommandData> registerCommand() {
         return List.of(
-                Commands.slash(getCommandName(), getCommandDescription()),
+                Commands.slash(getCommandName(), getCommandDescription())
+                        // Команда без сабкоманды:
+                        // brickbank
+                        // brickbank balance | pay
+                        .addSubcommands(
+                                new SubcommandData("balance", "...")
+                                // ...
+                        )
+                        .addSubcommands(
+                                new SubcommandData("pay", "...")
+                                // ...
+                        ),
                 Commands.user("BrickBank pay"),
                 Commands.message("BrickBank pay")
         );
