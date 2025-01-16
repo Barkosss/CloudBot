@@ -1,6 +1,9 @@
 package Permanager.commands.custom;
 
 import Permanager.commands.BaseCommand;
+import Permanager.utils.JSONHandler;
+import Permanager.utils.LoggerHandler;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -13,6 +16,9 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import java.util.List;
 
 public class BrickBankCommand implements BaseCommand {
+    JSONHandler json = new JSONHandler();
+    LoggerHandler logger = new LoggerHandler();
+
     @Override
     public String getCommandName() {
         return "brickbank";
@@ -54,11 +60,13 @@ public class BrickBankCommand implements BaseCommand {
 
     @Override
     public void userContext(UserContextInteractionEvent event) {
-        // ...
+        Member member = event.getTargetMember();
+        event.reply(String.format("User: %s", member.getUser().getName())).queue();
     }
 
     @Override
     public void messageContext(MessageContextInteractionEvent event) {
-        // ...
+        Member member = event.getTarget().getMember();
+        event.reply(String.format("User: %s", member.getUser().getName())).queue();
     }
 }

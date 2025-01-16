@@ -1,6 +1,7 @@
 package Permanager;
 
 import Permanager.commands.BaseCommand;
+import Permanager.system.AuditSystem;
 import Permanager.utils.JSONHandler;
 import Permanager.utils.LoggerHandler;
 import net.dv8tion.jda.api.JDA;
@@ -10,11 +11,13 @@ import net.dv8tion.jda.api.events.interaction.GenericInteractionCreateEvent;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +38,12 @@ public class CommandManager extends ListenerAdapter {
         try {
             String token = String.valueOf(jsonHandler.read("config.json", "token"));
 
-            JDA jda = JDABuilder.createDefault(token).addEventListeners(this).build();
+            JDA jda = JDABuilder.createDefault(token)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.DIRECT_MESSAGES,
+                            GatewayIntent.MESSAGE_CONTENT)
+                    .addEventListeners(this).addEventListeners(new AuditSystem()).build();
             jda.getPresence().setActivity(Activity.customStatus("A Java bot"));
             JDALogger.setFallbackLoggerEnabled(false);
 
@@ -113,6 +121,12 @@ public class CommandManager extends ListenerAdapter {
                 String commandName = modalInteractionEvent.getModalId().split("_")[0];
                 BaseCommand command = commands.get(commandName);
                 command.modal(modalInteractionEvent);
+            }
+            case UserContextInteractionEvent userContextInteractionEvent -> {
+                // User Context
+                String commandName = userContextInteractionEvent.getFullCommandName().split(" ")[0].toLowerCase();
+                BaseCommand command = commands.get(commandName);
+                command.userContext(userContextInteractionEvent);
             }
             case MessageContextInteractionEvent messageContextInteractionEvent -> {
                 // Message Context
